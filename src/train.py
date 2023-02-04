@@ -1,6 +1,7 @@
 """ Training and evaluationg functions """
 
 from tqdm.auto import tqdm
+import numpy as np
 import torch
 
 from torchmetrics import CharErrorRate
@@ -54,7 +55,7 @@ def fit_epoch(
             target_batch = labels.to("cpu").detach().numpy()
 
             predicted_words += [
-                convert_label_to_string(word)
+                convert_label_to_string(word, is_prediction=True)
                 for word in predicted_batch
             ]
 
@@ -109,7 +110,7 @@ def eval_epoch(
                 target_batch = labels.to("cpu").detach().numpy()
 
                 predicted_words += [
-                    convert_label_to_string(word)
+                    convert_label_to_string(word, is_prediction=True)
                     for word in predicted_batch
                 ]
 
@@ -192,9 +193,10 @@ def train(
             train_target_words[0]
         )]
 
+        sample_idx = np.random.randint(0, len(test_predicted_words))
         test_example_history += [(
-            test_predicted_words[0],
-            test_target_words[0]
+            test_predicted_words[sample_idx],
+            test_target_words[sample_idx]
         )]
         print(test_example_history[-1])
 
@@ -202,4 +204,4 @@ def train(
 
 
 if __name__ == "__main__":
-    print("Hello")
+    pass
