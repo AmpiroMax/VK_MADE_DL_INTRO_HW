@@ -3,7 +3,14 @@ from model import RCNN
 from train import train
 
 import torch
+import random
+import numpy as np
 import matplotlib.pyplot as plt
+
+
+random.seed(0)
+np.random.seed(0)
+torch.manual_seed(0)
 
 DEVICE = "cuda"
 
@@ -14,8 +21,9 @@ if __name__ == "__main__":
     train_dataset.set_state("train")
     test_dataset.set_state("test")
 
-    model = RCNN().to(DEVICE)
-    optimizer = torch.optim.Adadelta(model.parameters(), lr=0.5)
+    model = RCNN()
+    model.to(DEVICE)
+    optimizer = torch.optim.Adadelta(model.parameters(), lr=0.3)
     criterion = torch.nn.CTCLoss(reduction="sum", zero_infinity=True, blank=36)
     criterion.to(DEVICE)
 
@@ -25,7 +33,7 @@ if __name__ == "__main__":
         model=model,
         optimizer=optimizer,
         criterion=criterion,
-        epochs=50,
+        epochs=80,
         batch_size=64
     )
 
