@@ -9,7 +9,7 @@ from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
 from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
-
+from itertools import groupby
 
 CHARS = string.digits + string.ascii_lowercase
 CHAR_2_LABEL = {
@@ -20,11 +20,15 @@ LABEL_2_CHAR = {
 }
 
 
-def convert_label_to_string(label: np.ndarray):
+def convert_label_to_string(label: np.ndarray, is_prediction=False):
     answer = []
     for sim_idx in label:
         if sim_idx in LABEL_2_CHAR.keys():
             answer += [LABEL_2_CHAR[sim_idx]]
+        else:
+            answer += ['-']
+    if is_prediction:
+        answer = [sim for sim, _ in groupby(answer) if sim != '-']
     return answer
 
 
