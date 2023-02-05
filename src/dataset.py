@@ -1,15 +1,15 @@
 """ Dataset implementation module """
 
 import os
-import cv2
-import torch
 import string
-import numpy as np
-from torch.utils.data import Dataset
-from sklearn.model_selection import train_test_split
-from tqdm.auto import tqdm
-import matplotlib.pyplot as plt
 from itertools import groupby
+
+import cv2
+import numpy as np
+import torch
+from sklearn.model_selection import train_test_split
+from torch.utils.data import Dataset
+from tqdm.auto import tqdm
 
 CHARS = string.digits + string.ascii_lowercase
 CHAR_2_LABEL = {
@@ -87,8 +87,3 @@ class CaptchaDataset(Dataset):
             return self.img_test[idx], label
 
         raise Exception("Wrong state, expected train or test")
-
-
-if __name__ == "__main__":
-    print(CHAR_2_LABEL)
-    print(LABEL_2_CHAR)

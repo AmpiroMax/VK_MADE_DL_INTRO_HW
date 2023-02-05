@@ -1,20 +1,25 @@
+""" Training pipeline and result shower module"""
+
+import random
+
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
+
 from dataset import CaptchaDataset
 from model import RCNN
 from train import train
-
-import torch
-import random
-import numpy as np
-import matplotlib.pyplot as plt
-
 
 random.seed(0)
 np.random.seed(0)
 torch.manual_seed(0)
 
-DEVICE = "cuda"
 
-if __name__ == "__main__":
+DEVICE = "cuda"
+PATH = "models/"
+
+
+def training_pipeline():
     train_dataset = CaptchaDataset()
     test_dataset = CaptchaDataset()
 
@@ -41,8 +46,9 @@ if __name__ == "__main__":
     test_loss_history = history[1]
     train_cer_history = history[2]
     test_cer_history = history[3]
-    train_example_history = history[4]
-    test_example_history = history[5]
+
+    best_model = history[6]
+    torch.save(best_model, PATH + "model")
 
     plt.subplot(121)
     plt.title("CTC Loss")
@@ -57,3 +63,7 @@ if __name__ == "__main__":
     plt.legend()
 
     plt.show()
+
+
+if __name__ == "__main__":
+    training_pipeline()

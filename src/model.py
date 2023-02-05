@@ -8,7 +8,7 @@ class RCNN(nn.Module):
         super().__init__()
         in_channels = 1
         out_channels = 512
-        height = 1
+        activation_map_height = 1
         cnn_embedding_size = 64
         hidden_rnn_size = 256
         num_classes = 37
@@ -88,7 +88,10 @@ class RCNN(nn.Module):
         )
 
         self.map_2_seq_layer = nn.Sequential(
-            nn.Linear(out_channels * height, cnn_embedding_size)
+            nn.Linear(
+                out_channels * activation_map_height,
+                cnn_embedding_size
+            )
         )
 
         self.bi_rnn_layer = nn.Sequential(
@@ -117,6 +120,7 @@ class RCNN(nn.Module):
         batch, channel, height, width = activation_maps.size()
 
         activation_maps = activation_maps.view(batch, channel * height, width)
+
         # (width, batch, feature)
         activation_maps = activation_maps.permute(2, 0, 1)
         cnn_embedding_seq = self.map_2_seq_layer(activation_maps)
@@ -136,4 +140,5 @@ class RCNN(nn.Module):
 
 
 if __name__ == "__main__":
-    pass
+    model = RCNN()
+    print(model)

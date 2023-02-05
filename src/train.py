@@ -1,12 +1,11 @@
 """ Training and evaluationg functions """
 
-from tqdm.auto import tqdm
 import numpy as np
 import torch
-
-from torchmetrics import CharErrorRate
 from torch import nn
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
+from torchmetrics import CharErrorRate
+from tqdm.auto import tqdm
 
 from dataset import convert_label_to_string
 
@@ -123,8 +122,8 @@ def eval_epoch(
                 processed_data += inputs.size(0)
             pbar.update(1)
 
-    valid_accuracy = float(running_loss / processed_data)
-    return valid_accuracy, predicted_words, target_words
+    valid_loss = float(running_loss / processed_data)
+    return valid_loss, predicted_words, target_words
 
 
 def train(
@@ -160,8 +159,11 @@ def train(
     train_loss = None
     cer = CharErrorRate()
 
+    best_model = None
+    best_cer = None
+
     for epoch in range(epochs):
-        print(f"EPOCH {epoch}/{epochs}: ")
+        print(f"EPOCH {epoch + 1}/{epochs}: ")
         train_loss,  train_predicted_words, train_target_words = fit_epoch(
             model,
             train_loader,
@@ -176,11 +178,6 @@ def train(
         )
         train_cer = cer(train_predicted_words, train_target_words).numpy()
         test_cer = cer(test_predicted_words, test_target_words).numpy()
-
-        print("Train loss:  ", train_loss)
-        print("Train  CER:  ", train_cer)
-        print("Test  loss:  ", test_loss)
-        print("Test   CER:  ", test_cer)
 
         train_loss_history += [train_loss]
         test_loss_history += [test_loss]
@@ -198,10 +195,24 @@ def train(
             test_predicted_words[sample_idx],
             test_target_words[sample_idx]
         )]
-        print(test_example_history[-1])
 
-    return (train_loss_history, test_loss_history, train_cer_history, test_cer_history, train_example_history, test_example_history)
+        if best_model is None or test_cer < best_cer:
+            best_model = model
+            best_cer = test_cer
 
+        print("Train loss:  ", train_loss)
+        print("Train  CER:  ", train_cer)
+        print("Test  loss:  ", test_loss)
+        print("Test   CER:  ", test_cer)
+        print("Best   CER:  ", best_cer)
+        print(*test_example_history[-5:], sep="\n")
 
-if __name__ == "__main__":
-    pass
+    return (
+        train_loss_history,
+        test_loss_history,
+        train_cer_history,
+        test_cer_history,
+        train_example_history,
+        test_example_history,
+        model
+    )
