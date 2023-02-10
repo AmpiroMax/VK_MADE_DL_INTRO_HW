@@ -121,7 +121,6 @@ class RCNN(nn.Module):
 
         activation_maps = activation_maps.view(batch, channel * height, width)
 
-        # (width, batch, feature)
         activation_maps = activation_maps.permute(2, 0, 1)
         cnn_embedding_seq = self.map_2_seq_layer(activation_maps)
 

@@ -75,7 +75,7 @@ class CaptchaDataset(Dataset):
         if self.state == "test":
             return len(self.img_test)
 
-        raise Exception("Wrong state, expected train or test")
+        raise KeyError("Wrong state, expected train or test")
 
     def __getitem__(self, idx: int):
         if self.state == "train":
@@ -86,4 +86,4 @@ class CaptchaDataset(Dataset):
             label = self._label_2_longtensor(self.label_test[idx])
             return self.img_test[idx], label
 
-        raise Exception("Wrong state, expected train or test")
+        raise KeyError("Wrong state, expected train or test")

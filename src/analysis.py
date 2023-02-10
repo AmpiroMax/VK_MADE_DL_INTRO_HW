@@ -9,9 +9,9 @@ import torch
 from torch.utils.data import DataLoader
 from torchmetrics import CharErrorRate
 
-from dataset import CaptchaDataset
-from model import RCNN
-from train import eval_epoch
+from .dataset import CaptchaDataset
+from .model import RCNN
+from .train import eval_epoch
 
 random.seed(0)
 np.random.seed(0)

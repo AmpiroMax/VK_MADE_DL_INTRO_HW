@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchmetrics import CharErrorRate
 from tqdm.auto import tqdm
 
-from dataset import convert_label_to_string
+from .dataset import convert_label_to_string
 
 DEVICE = "cuda"
 

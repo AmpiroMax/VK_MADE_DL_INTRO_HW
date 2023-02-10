@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from dataset import CaptchaDataset
-from model import RCNN
-from train import train
+from .dataset import CaptchaDataset
+from .model import RCNN
+from .train import train
 
 random.seed(0)
 np.random.seed(0)
@@ -23,7 +23,9 @@ def training_pipeline():
     train_dataset = CaptchaDataset()
     test_dataset = CaptchaDataset()
 
+    print("Prepearing train data")
     train_dataset.set_state("train")
+    print("Prepearing test data")
     test_dataset.set_state("test")
 
     model = RCNN()
